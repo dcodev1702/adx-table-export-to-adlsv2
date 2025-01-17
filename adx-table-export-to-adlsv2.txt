@@ -16,6 +16,9 @@
 2025-01-17T12:08:43Z,MAC200,MacOS,13.2,false
 2025-01-17T13:27:19Z,DVLX567,Linux,6.1,true
 2025-01-17T14:40:10Z,DVM345,Windows,11.2,true
+2025-01-13T18:12:59Z,DVM745,Ubuntu,24.02,true
+2025-01-12T13:33:01Z,DVM802,Windows,11.2,false
+2025-01-15T16:31:45Z,DVM987,Windows Server,2022.2,true
 
 // Display the data that is now populated
 DeviceEvents
