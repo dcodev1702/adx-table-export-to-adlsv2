@@ -1,0 +1,32 @@
+// Create the required tables
+.execute database script <|
+    .create-merge tables
+    DeviceEvents(TimeGenerated:datetime, DeviceId:string, OS:string, Version:real, CloudVM:bool),
+    DeviceLogonEvents(TimeGenerated:datetime, ObjectId:guid, FirstName:string, LastName:string),
+    EmailEvents(TimeGenerated:datetime, Server:string, MsgId:guid, MsgContent:string),
+    SignInLogs(TimeGenerated:datetime, Country:string, State:string, Lat:real, Long:real, ObjectId:guid, PrincipalUserName:string);
+    
+//.show tables (DeviceEvents, DeviceLogonEvents, EmailEvents, SignInLogs)
+.show table DeviceEvents
+
+// Ingest dummy data into the DeviceEvents table. This can be ingested a variety of different methods (ADF, API, SA, EventHub, INLINE, etc)
+.ingest inline into table DeviceEvents <|
+2025-01-17T10:23:54Z,DVX100,Windows,10.3,false
+2025-01-17T11:15:02Z,DVZ101,Linux,5.8,true
+2025-01-17T12:08:43Z,MAC200,MacOS,13.2,false
+2025-01-17T13:27:19Z,DVLX567,Linux,6.1,true
+2025-01-17T14:40:10Z,DVM345,Windows,11.2,true
+
+// Display the data that is now populated
+DeviceEvents
+
+// Export the data to blob storage (ADLSv2) using a ManagedIdentity
+.export async to csv (h@'https://dodealogretention.blob.core.windows.net/seckql007/kqltest-1;impersonate')
+with (
+    namePrefix="DeviceEvents_Data",     // CSV file prefix
+    fileExtension = ".csv",             // Ensures file ends with .csv
+    includeHeaders = "all",             // Include column headers in each csv file (set to 'none' if you don't want headers)
+    distributed = true                  // Parallel export for scalability
+)
+<|
+DeviceEvents
